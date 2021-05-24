@@ -1,30 +1,60 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <div id="wrapper">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <router-link to='/' class="navbar-item"><img src="@/assets/img/logo.svg"></router-link>
+      </div>
+      
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbar-menu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+
+      <div class="navbar-menu" id="navbar-menu">
+        <div class="navbar-item is-expanded is-justify-content-center is-align-item-center">
+          <span class="mr-2 mt-1"><i class="fas fa-chevron-left fa-2x"></i></span>
+          <div class="has-text-centered" id="server-time">
+            {{ 'Server Time: ' + timestamp }}
+          </div>
+          <span class="ml-2 mt-1"><i class="fas fa-chevron-right fa-2x"></i></span>
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <router-link to="/login" class="button is-light">Login</router-link>
+              <router-link to="/register" class="button is-info">Register</router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <router-view/>
   </div>
-  <router-view/>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import moment from 'moment'
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+  export default{
+    data() {
+      return {
+        timestamp: ''
+      }
+    },
+    created() {
+      setInterval(() => {
+        this.getServerTime();
+      }, 1000)
+    },
+    methods: {
+      getServerTime: function() {
+        this.timestamp = moment(new Date()).format("MMMM Do YYYY, hh:mm:ss a")
+      }
     }
   }
-}
+</script>
+<style lang="scss">
+  @import '../node_modules/bulma';
 </style>
