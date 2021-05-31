@@ -21,7 +21,7 @@
         </div>
         <div class="navbar-end">
           <div class="navbar-item">
-            <div class="buttons">
+            <div class="buttons-">
               <router-link to="/login" class="button is-light">Login</router-link>
               <router-link to="/register" class="button is-info">Register</router-link>
             </div>

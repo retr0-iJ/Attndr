@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
+
+    'accounts',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -97,6 +99,24 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.TokenAuthentication',
+   ),
+}
+
+# EMAIL
+# email account = attndr.cs@gmail.com
+# password = 3*u_,am#+T%b`fJ]
+# app password = ksojwuoyawterakj
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'attndr.cs@gmail.com'
+EMAIL_HOST_PASSWORD = 'ksojwuoyawterakj'
+EMAIL_USE_TLS = True
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -135,6 +155,27 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DJOSER = {
+    'LOGIN_FIELD' : 'email',
+    'USER_CREATE_PASSWORD_RETYPE' : True,
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'SET_USERNAME_RETYPE' : True,
+    'SET_PASSWORD_RETYPE' : True,
+    'USERNAME_RESET_CONFIRM_URL' : 'email/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFRIM_URL' : 'password/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL' : 'activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL' : True,
+    'SERIALIZERS' : {
+        'user_create' : 'accounts.serializers.UserCreateSerializer',
+        'user' : 'accounts.serializers.UserCreateSerializer',
+        'user_delete' : 'djoser.serializers.UserDeleteSerializer'
+    },
+}
+
+AUTH_USER_MODEL = 'accounts.OrganizerAccount'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
