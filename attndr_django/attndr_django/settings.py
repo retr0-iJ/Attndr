@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'djoser',
 
     'accounts',
-
     'events',
 ]
 
