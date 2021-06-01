@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'djoser',
 
     'accounts',
+
+    'events',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -84,7 +86,12 @@ WSGI_APPLICATION = 'attndr_django.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+'''
+    'ENGINE': 'django.db.backends.sqlite3',
+	'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        
+'''
+import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
