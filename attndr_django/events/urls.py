@@ -1,21 +1,13 @@
 from django.urls import path
+from django.urls.conf import include
 
-from events.views import (
-    event_list_view,
-    event_single_view,
-    event_create_view,
-    event_delete_view,
+from rest_framework.routers import DefaultRouter
 
-)
+from .views import EventViewSet
 
+route = DefaultRouter()
+route.register('events', EventViewSet)
 app_name = 'events'
-
 urlpatterns = [
-    path('', event_list_view, name='event_list'),
-    path('<int:id>/', event_single_view, name='event_detail'), 
-    path('create/', event_create_view, name='event_create'),
-    path('<int:id>/delete/', event_delete_view, name='event_delete'),
-
-
-
+    path('api/', include(route.urls))
 ]

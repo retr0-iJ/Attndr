@@ -4,11 +4,11 @@ from django.db.models.query import FlatValuesListIterable
 
 
 class Event(models.Model):
-    event_name      = models.CharField(max_length=50)
-    speaker_name    = models.CharField(max_length=50)
-    location        = models.TextField(blank=True, null=False)
-    date            = models.DateField(auto_now=True)
-    time            = models.TimeField(auto_now=True)
+    event_name       = models.CharField(max_length=255)
+    speaker_name    = models.CharField(max_length=255)
+    location        = models.CharField(max_length=255)
+    date            = models.DateField(null=True)
+    time            = models.TimeField(null=True)
     
 
 
