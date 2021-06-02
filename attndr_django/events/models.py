@@ -1,12 +1,11 @@
 from django.db import models
 from django.db import models
-from django.db.models.query import FlatValuesListIterable
 
 class Participant(models.Model):
-    name    = models.CharField(max_length=255)
-    email   = models.EmailField(max_length=255)
+    name    = models.CharField(max_length=255, null=True)
+    email   = models.EmailField(max_length=255, null=True)
     phone   = models.CharField(max_length=20, unique=True)
-    city    = models.CharField(max_length=255)
+    city    = models.CharField(max_length=255, null=True)
 
     REQUIRED_FIELDS = ['name', 'email', 'phone', 'city']
 
@@ -29,14 +28,14 @@ class Event(models.Model):
         'time_start', 
         'time_end',
         'quota', 
-        'participants'
+        'participants',
         'is_done'
     ]
 
 class Attendance(models.Model):
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
     event       = models.ForeignKey(Event, on_delete=models.CASCADE)
-    time_in     = models.TimeField(blank=True)
-    time_out    = models.TimeField(blank=True)
+    time_in     = models.TimeField(null=True)
+    time_out    = models.TimeField(null=True)
 
     REQUIRED_FIELDS = ['participant', 'event', 'time_in', 'time_out']

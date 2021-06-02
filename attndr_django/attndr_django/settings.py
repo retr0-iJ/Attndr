@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'accounts',
     'events',
+    'qr_code',
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -86,7 +87,7 @@ WSGI_APPLICATION = 'attndr_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 '''
-        'ENGINE': 'django.db.backends.mysql',
+       'ENGINE': 'django.db.backends.mysql',
         'NAME': 'attndr',
         'USER': "",
         'PASSWORD': "",
