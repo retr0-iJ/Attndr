@@ -14,6 +14,18 @@ class OrganizerAccountManager(BaseUserManager):
 
         return user
 
+    def create_superuser(self, name, email, phone, password):
+        user = self.create_user(
+            name,
+            email,
+            phone,
+            password=password,
+        )
+        user.admin = True
+        user.save()
+        
+        return user
+
 class OrganizerAccount(AbstractBaseUser, PermissionsMixin):
     name        = models.CharField(max_length=255)
     email       = models.EmailField(max_length=255, unique=True)
