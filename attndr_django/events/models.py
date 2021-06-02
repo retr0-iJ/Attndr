@@ -15,8 +15,8 @@ class Event(models.Model):
     speaker_name    = models.CharField(max_length=255)
     location        = models.CharField(max_length=255,blank=True, null=False)
     date            = models.DateField()
-    time_start      = models.TimeField()
-    time_end        = models.TimeField()
+    time_start      = models.TimeField(null=True)
+    time_end        = models.TimeField(null=True)
     quota           = models.IntegerField()
     participants    = models.ManyToManyField(Participant, through='Attendance')
     is_done         = models.BooleanField(default=False)
@@ -27,9 +27,9 @@ class Event(models.Model):
         'location', 
         'date', 
         'time_start', 
-        'time_end', 
+        'time_end',
         'quota', 
-        'participants',
+        'participants'
         'is_done'
     ]
 
