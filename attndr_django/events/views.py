@@ -1,14 +1,11 @@
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-# Create your views here.
+from rest_framework.response import Response
 
 from .models import Event
-from .serializer import EventSerializer
+from .serializers import EventSerializer
 
-class EventDetail(APIView):
-    def get(self, request):
-        None
-
-class EventViewSet(ModelViewSet):
-    serializer_class = EventSerializer
-    queryset = Event.objects.all()
+class EventList(APIView):
+    def get(self, request, format=None):
+        events = Event.objects.all()
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
