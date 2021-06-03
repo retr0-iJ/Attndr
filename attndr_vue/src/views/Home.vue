@@ -1,15 +1,19 @@
 <template>
-  
+  <div id="wrapper">
+    <Landing_Page />
+  </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import Landing_Page from "@/components/Landing_Page.vue"
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    Landing_Page
+  },
+  mounted(){
+    document.title = "Home"
   }
 }
 </script>

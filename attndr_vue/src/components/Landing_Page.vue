@@ -1,9 +1,43 @@
 <template>
     <section class="hero is-fullheight-with-navbar">
-        <div class="modal">
+        <div id="modalContactUs" class="modal animate__animated">
             <div class="modal-background"></div>
             <div class="modal-content">
-                <span>aaaa</span>
+                <div class="box">
+                    <div class="field has-text-centered">
+                        <h3 class="title">Contact Us</h3>
+                        <h6 class="subtitle is-6">Leave your message to our email.</h6>
+                    </div>
+                    <form action="">
+                        <div class="field">
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" name="email" id="email" 
+                                    placeholder="Your Email">
+                                <span class="icon is-small is-left">
+                                    <i class="fa fa-envelope"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label for="subject" class="label">Subject</label>
+                                <input class="input" type="text" name="subject" id="subject" 
+                                    placeholder="The subject of your message">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <label for="body" class="label">Message</label>
+                                <textarea name="body" id="body" class="textarea" rows="6"></textarea>
+                            </div>
+                        </div>
+                        <div class="field has-text-centered">
+                            <button class="button is-info is-fullwidth">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <button class="modal-close is-large" aria-label="close"></button>
         </div>
@@ -61,6 +95,7 @@
 </template>
 <script>
 export default {
+    name: "Landing Page",
     data(){
         return {
 
@@ -73,13 +108,27 @@ export default {
 
     },
     mounted(){
-        $("#contactUs").click(function() {
-            $(".modal").addClass("is-active");  
-        });
+        (function($){
+            $(function(){
+                $("#contactUs").click(function() {
+                    $("#modalContactUs")
+                    .removeClass("animate__fadeOut")
+                    .addClass("animate__fadeIn")
+                    .addClass("is-active");
+                });
+            });
 
-        $(".modal-close").click(function() {
-            $(".modal").removeClass("is-active");
-        });
+            $(function(){
+                $("#modalContactUs .modal-close, .modal-background").click(function() {
+                    $("#modalContactUs")
+                        .removeClass("animate__fadeIn")
+                        .addClass("animate__fadeOut")
+                        .one("animationend", function(){
+                            $(this).removeClass("is-active")
+                        });
+                });
+            });
+        }(jQuery));
     }
 }
 </script>

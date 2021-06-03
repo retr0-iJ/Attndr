@@ -7,6 +7,7 @@
 
 <script>
   import Navbar from '@/components/Navbar.vue'
+  import axios from 'axios'
 
   export default{
     components: {
