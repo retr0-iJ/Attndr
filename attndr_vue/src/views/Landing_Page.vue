@@ -109,6 +109,10 @@ export default {
     },
     mounted(){
         (function($){
+            $(() => {
+                document.title = "Home"
+            })
+
             $(function(){
                 $("#contactUs").click(function() {
                     $("#modalContactUs")
