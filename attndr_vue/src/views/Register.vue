@@ -17,11 +17,11 @@
                                     </span>
                                 </div>
                             </div>
-                            <form action="">
+                            <form @submit.prevent="submitForm">
                                 <div class="field">
                                     <label for="name" class="label">Full Name</label>
                                     <div class="control">
-                                        <input class="input" type="text" name="name" id="name" 
+                                        <input class="input" type="text" id="name" v-model="name"
                                             placeholder="e.g. Alex Jordan">
                                     </div>
                                 </div>
@@ -34,7 +34,7 @@
                                             </a>
                                         </div>
                                         <div class="control is-expanded">
-                                            <input class="input" type="tel" name="phone" id="phone" 
+                                            <input class="input" type="tel" id="phone" v-model="phone"
                                                 placeholder="e.g. 812xxxxxx">
                                         </div>
                                     </div>
@@ -42,7 +42,7 @@
                                 <div class="field">
                                     <label for="email" class="label">Email</label>
                                     <div class="control">
-                                        <input class="input" type="text" name="email" id="email" 
+                                        <input class="input" type="text" id="email" v-model="email"
                                             placeholder="e.g. alexjordan1@gmail.com">
                                     </div>
                                 </div>
@@ -50,9 +50,9 @@
                                     <div class="control">
                                         <label for="password" class="label">
                                             Password
-                                            <span class="has-text-weight-normal"> (6 or more characters)</span>
+                                            <span class="has-text-weight-normal"> (8 or more characters)</span>
                                         </label>
-                                        <input class="input" type="password" name="password" id="password" 
+                                        <input class="input" type="password" id="password" v-model="password"
                                             placeholder="Password">
                                     </div>
                                 </div>
@@ -62,13 +62,16 @@
                                             Re-Enter Password
                                             <span class="has-text-weight-normal"> (must be equal to Password)</span>
                                         </label>
-                                        <input class="input" type="password" name="repassword" id="repassword" 
+                                        <input class="input" type="password" id="repassword" v-model="repassword"
                                             placeholder="Re-Password">
                                     </div>
                                 </div>
+                                <div class="notification is-danger" v-if="errors.length">
+                                    <p>{{ errors[0] }}</p>
+                                </div>
                                 <div class="field has-text-centered">
-                                    <button class="button is-info is-fullwidth">
-                                        Register
+                                    <button id="btnRegister" class="button is-info is-fullwidth is-medium">
+                                        Sign Up
                                     </button>
                                     <span class="is-size-7">
                                         Already on Attndr?<router-link to="/login"> Sign in</router-link>
@@ -83,7 +86,73 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
+import { toast } from 'bulma-toast'
+
     export default {
-        
+        name: "Register",
+        data(){
+            return {
+                name: '',
+                phone: '',
+                email: '',
+                password: '',
+                repassword: '',
+                errors: []
+            }
+        },
+        created(){
+
+        },
+        methods: {
+            submitForm(){
+                $("#btnRegister").addClass("is-loading")
+
+                this.errors = []
+
+                const formData = {
+                    name: this.name,
+                    email: this.email,
+                    phone: this.phone,
+                    password: this.password,
+                    re_password: this.repassword
+                }
+
+                axios
+                    .post("/api/v1/users/", formData)
+                    .then(response => {
+                        toast({
+                            message: 'Account successfully created, please login!',
+                            type: 'is-success',
+                            dismissible: true,
+                            pauseOnHover: true,
+                            duration: 2000,
+                            position: 'bottom-right'
+                        })
+
+                        setTimeout(() => {
+                            this.$router.push('/login')
+                        }, 1500)
+                    })
+                    .catch(error => {
+                        if(error.response){
+                            for(const property in error.response.data){
+                                this.errors.push(`${property}: ${error.response.data[property]}`)
+                            }
+
+                            console.log(JSON.stringify(error.response.data))
+                        }else if(error.message){
+                            this.errors.push('Something went wrong. Please try again!')
+
+                            console.log(JSON.stringify(error))
+                        }
+                    }).then(function(){
+                        $("#btnRegister").removeClass("is-loading")
+                    })
+            }
+        },
+        mounted(){
+            document.title = "Register"
+        }
     }
 </script>

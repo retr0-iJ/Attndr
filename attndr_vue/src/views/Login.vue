@@ -20,11 +20,11 @@
                                     </span>
                                 </div>
                             </div>
-                            <form action="">
+                            <form @submit.prevent="submitForm">
                                 <div class="field">
                                     <div class="control has-icons-left">
-                                        <input class="input" type="text" name="emailorphone" id="emailorphone" 
-                                            placeholder="Email or mobile number">
+                                        <input class="input" type="text" id="email" v-model="email" 
+                                            placeholder="Email">
                                         <span class="icon is-small is-left">
                                             <i class="fa fa-envelope"></i>
                                         </span>
@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="field">
                                     <div class="control has-icons-left">
-                                        <input class="input" type="password" name="password" id="password" 
+                                        <input class="input" type="password" id="password" v-model="password"
                                             placeholder="Password">
                                         <span class="icon is-small is-left">
                                             <i class="fa fa-lock"></i>
@@ -41,13 +41,16 @@
                                 </div>
                                 <div class="field mb-4">
                                     <label for="rememberme" class="checkbox">
-                                        <input type="checkbox" name="rememberme" id="rememberme">
+                                        <input type="checkbox" id="rememberme" v-model="rememberme">
                                         Remember me
                                     </label>
                                     <router-link to="/forget" class="is-pulled-right">Forget login details?</router-link>
                                 </div>
+                                <div class="notification is-danger" v-if="errors.length">
+                                    <p>{{ errors[0] }}</p>
+                                </div>
                                 <div class="field has-text-centered">
-                                    <button class="button is-info is-fullwidth">
+                                    <button id="btnLogin" class="button is-info is-fullwidth">
                                         Login
                                     </button>
                                     <span class="is-size-7">
@@ -63,7 +66,85 @@
     </div>
 </template>
 <script>
+import axios from 'axios'
+import { toast } from 'bulma-toast'
+
     export default {
-        
+        name: "Login",
+        data(){
+            return {
+                email: '',
+                password: '',
+                rememberme: false,
+                errors: []
+            }
+        },
+        created(){
+
+        },
+        methods: {
+            async submitForm(){
+                $('#btnLogin').addClass('is-loading')
+
+                axios.defaults.headers.common['Authorization'] = ""
+                localStorage.removeItem["token"]
+
+                this.errors = []
+
+                const formData = {
+                    email: this.email,
+                    password: this.password
+                }
+
+                await axios
+                    .post("/api/v1/token/login", formData)
+                    .then(response => {
+                        toast({
+                            message: 'Login Successful!',
+                            type: 'is-success',
+                            dismissible: true,
+                            pauseOnHover: true,
+                            duration: 2000,
+                            position: 'bottom-right'
+                        })
+
+                        const token = response.data.auth_token
+                        this.$store.commit('setToken', token)
+                        axios.defaults.headers.common['Authorization'] = "Token " + token
+                        localStorage.setItem("token", token)
+                        const toPath = this.$route.query.to || '/'
+
+                        setTimeout(() => {
+                            this.$router.push(toPath)
+                        }, 1500)
+                        
+                        axios
+                            .get("/api/v1/users/me")
+                            .then(response => {
+                                const name = response.data["name"].split(" ")[0]
+                                localStorage.setItem("name", name)
+                                this.$store.commit('setName', name)
+                            })
+                    })
+                    .catch(error => {
+                        if(error.response){
+                            for(const property in error.response.data){
+                                this.errors.push(`${property} = ${error.response.data[property]}`)
+                            }
+
+                            console.log(JSON.stringify(error.response.data))
+                        }else if(error.message){
+                            this.errors.push('Something went wrong. Please try again!')
+
+                            console.log(JSON.stringify(error))
+                        }
+                    }).then(function(){
+                        $("#btnLogin").removeClass("is-loading")
+                    })
+            }
+        },
+        mounted(){
+            document.title = "Login"
+        }
     }
 </script>

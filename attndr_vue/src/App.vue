@@ -13,5 +13,16 @@
     components: {
       Navbar
     },
+    beforeCreate(){
+      this.$store.commit('initializeAuth')
+
+      const token = this.$store.state.token
+
+      if(token){
+        axios.defaults.headers.common['Authorization'] = "Token " + token
+      }else{
+        axios.defaults.headers.common['Authorization'] = ""
+      }
+    }
   }
 </script>
