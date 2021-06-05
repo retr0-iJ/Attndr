@@ -46,6 +46,11 @@ INSTALLED_APPS = [
     'accounts',
     'events',
     'qr_code',
+
+    'contact',
+
+
+
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -116,7 +121,8 @@ REST_FRAMEWORK = {
 # email account = attndr.cs@gmail.com
 # password = 3*u_,am#+T%b`fJ]
 # app password = ksojwuoyawterakj
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'attndr.cs@gmail.com'
