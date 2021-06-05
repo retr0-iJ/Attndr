@@ -24,6 +24,7 @@ const routes = [
   },
   {
     path: '/home',
+    alias: '/upcoming',
     name: 'Home',
     component: Home
   }
