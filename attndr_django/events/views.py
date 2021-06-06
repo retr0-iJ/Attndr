@@ -15,7 +15,10 @@ class EventList(APIView):
 class UserEventList(APIView):
     def get(self, request):
         #Validasi user id harus angka
-        event = Event.objects.filter(user=request.data.get("user_id"))
+        if request.data.get("event_id") is not None:
+            event = Event.objects.filter(id=request.data.get("event_id"))
+        else:
+            event = Event.objects.filter(user=request.data.get("user_id"))
         serializer = EventSerializer(event, many = True)
         return Response(serializer.data)
 
@@ -62,7 +65,7 @@ class ParticipantList(APIView):
 
 class EventParticipantList(APIView):
     def get(self, request, format=None):
-        event = Event.objects.filter(id=request.data.get("event_id"), user = request.data.get("user_id"))
+        event = Event.objects.filter(id=request.data.get("event_id"), user=request.data.get("user_id"))
         participant = event.first().participants.all()
         #print(event.first().participants.all())
         serializer = ParticipantSerializer(data=participant, many=True)
