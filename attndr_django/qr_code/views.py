@@ -30,8 +30,9 @@ class ShowQRCode(APIView):
         qr.add_data(attendance.id)
         qr.make(fit=True)
         img = qr.make_image(fill='black', back_color='white')
-        img.save('qrcode001.png')
-        return Response({})
+        location = 'qr_code\images\qrcode.png'
+        img.save(location)
+        return Response({'location' : location})
 
 from datetime import datetime
 import json

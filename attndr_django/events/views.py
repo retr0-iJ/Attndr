@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from .models import Event, Attendance, Participant
 from .serializers import AttendanceSerializer, EventSerializer, ParticipantSerializer
 
+from rest_framework.authtoken.models import Token
 
 class EventList(APIView):
     def get(self, request):
@@ -14,6 +15,9 @@ class EventList(APIView):
 
 class UserEventList(APIView):
     def get(self, request):
+        print(request.headers.get('Authorization'))
+        headerToken = request.headers.get('Authorization')
+        token = Token.objects.get(headerToken)
         #Validasi user id harus angka
         if request.data.get("event_id") is not None:
             event = Event.objects.filter(id=request.data.get("event_id"))
