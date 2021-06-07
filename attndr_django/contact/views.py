@@ -24,10 +24,8 @@ class ContactUsNow(APIView):
 
             try:
                 #Output cuman di CMD
-                send_mail(subject, message, from_email, ['clarik72@gmail.com'])
+                send_mail(subject, message, from_email, ['attndr.cs@gmail.com'])
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
-
-            #print(subject, from_email, message)
-            None
+                
         return Response({})
