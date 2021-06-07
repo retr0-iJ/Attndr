@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper">
-    <Navbar v-if="!['Login', 'Register'].includes($route.name)" />
+    <Navbar v-if="!['Login', 'Register', 'Start_Event'].includes($route.name)" />
     <router-view/>
   </div>
 </template>

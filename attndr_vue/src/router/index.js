@@ -5,6 +5,7 @@ import Landing_Page from "@/views/Landing_Page.vue"
 import Home from '@/views/Home.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
+import Start_Event from '@/views/Start_Event.vue'
 
 const routes = [
   {
@@ -27,6 +28,11 @@ const routes = [
     alias: '/upcoming',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/start_event',
+    name: 'Start_Event',
+    component: Start_Event
   }
 ]
 
