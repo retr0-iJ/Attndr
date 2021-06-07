@@ -1,5 +1,5 @@
 from django.db import models
-from django.db import models
+
 
 class Participant(models.Model):
     name    = models.CharField(max_length=255, null=True)
@@ -10,6 +10,7 @@ class Participant(models.Model):
     REQUIRED_FIELDS = ['name', 'email', 'phone', 'city']
 
 class Event(models.Model):
+    user            = models.ForeignKey('accounts.OrganizerAccount', on_delete=models.CASCADE)
     event_name      = models.CharField(max_length=255)
     speaker_name    = models.CharField(max_length=255)
     location        = models.CharField(max_length=255,blank=True, null=False)
@@ -21,6 +22,7 @@ class Event(models.Model):
     is_done         = models.BooleanField(default=False)
 
     REQUIRED_FIELDS = [
+        'user',
         'event_name', 
         'speaker_name', 
         'location', 

@@ -46,6 +46,11 @@ INSTALLED_APPS = [
     'accounts',
     'events',
     'qr_code',
+
+    'contact',
+
+
+
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -86,27 +91,27 @@ WSGI_APPLICATION = 'attndr_django.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'attndr',
-        'USER': "",
-        'PASSWORD': "",
-        'HOST': "",
-        'PORT': "3307",
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        }
-    }
-}
-# import os
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-# 	    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'attndr',
+#         'USER': "",
+#         'PASSWORD': "",
+#         'HOST': "",
+#         'PORT': "3307",
+#         'OPTIONS': {
+#             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+#         }
 #     }
 # }
+import os
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+	    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        
+    }
+}
 
 REST_FRAMEWORK = {
    'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -118,7 +123,8 @@ REST_FRAMEWORK = {
 # email account = attndr.cs@gmail.com
 # password = 3*u_,am#+T%b`fJ]
 # app password = ksojwuoyawterakj
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'attndr.cs@gmail.com'
