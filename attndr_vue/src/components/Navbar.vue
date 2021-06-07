@@ -107,7 +107,7 @@
 
                   this.$store.commit('removeToken')
                   
-                  this.$route.push('/')
+                  this.$router.push('/')
                 })
                 .catch(error => {
 

@@ -127,7 +127,7 @@ import { toast } from 'bulma-toast'
                             })
                     })
                     .catch(error => {
-                        if(error.response){
+                        if(error.response && error.response.code != 500){
                             for(const property in error.response.data){
                                 this.errors.push(`${property} = ${error.response.data[property]}`)
                             }
