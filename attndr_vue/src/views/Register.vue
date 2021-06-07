@@ -6,9 +6,9 @@
                     <div class="column is-5 box">
                         <div class="content m-2">
                             <div class="is-flex-direction-column is-align-items-space-between has-text-centered mb-6">
-                                <div class="logo is-justify-content-center is-align-items-center m-4">
+                                <div class="logo-wrapper is-flex is-justify-content-center is-align-items-center m-4">
                                     <router-link to='/'>
-                                        <img src="@/assets/img/logo.svg" width="120">
+                                        <img class="logo" src="@/assets/img/logo.svg">
                                     </router-link>
                                 </div>
                                 <div class="description">
@@ -156,3 +156,8 @@ import { toast } from 'bulma-toast'
         }
     }
 </script>
+<style lang="scss" scoped>
+    .logo{
+        width: 30%
+    }
+</style>
