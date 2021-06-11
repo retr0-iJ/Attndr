@@ -1,4 +1,3 @@
-from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -6,6 +5,8 @@ from .models import Event, Attendance, Participant
 from .serializers import AttendanceSerializer, EventSerializer, ParticipantSerializer
 
 from rest_framework.authtoken.models import Token
+
+from django.shortcuts import get_list_or_404, get_object_or_404
 
 class EventList(APIView):
     def get(self, request):
@@ -15,15 +16,10 @@ class EventList(APIView):
 
 class UserEventList(APIView):
     def get(self, request):
-        print(request.headers.get('Authorization'))
         headerToken = request.headers.get('Authorization')
-        token = Token.objects.get(headerToken)
-        #Validasi user id harus angka
-        if request.data.get("event_id") is not None:
-            event = Event.objects.filter(id=request.data.get("event_id"))
-        else:
-            event = Event.objects.filter(user=request.data.get("user_id"))
-        serializer = EventSerializer(event, many = True)
+        token = Token.objects.get(key = headerToken.split()[1])
+        events = Event.objects.filter(user=token.user_id)
+        serializer = EventSerializer(events, many=True)
         return Response(serializer.data)
 
     def post(self, request):
@@ -31,6 +27,34 @@ class UserEventList(APIView):
         if serializer.is_valid():
             serializer.save()
         return Response(serializer.data)
+
+    def put(self, request):
+        event_id = request.data.get('event_id')
+        instance = get_object_or_404(Event.objects.all(), pk=event_id)
+        serializer = EventSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            print(serializer.errors)
+        return Response(serializer.data)
+
+    def delete(self, request):
+        event_id = request.data.get('event_id')
+        event = get_object_or_404(Event.objects.all(), pk=event_id)
+        event.delete()
+        return Response({})
+    
+
+
+class EventDetail(APIView):
+    def get(self, request):
+        event_id = request.data.get('event_id')
+        event = Event.objects.get(id=event_id)
+        serializer = EventSerializer(event)
+        
+        return Response(serializer.data)
+    
+    
 
 
 class AttendanceList(APIView):
@@ -64,6 +88,12 @@ class ParticipantList(APIView):
         serializer = ParticipantSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+        return Response(serializer.data)
+
+class ParticipantDetail(APIView):
+    def get(self, request, format=None):
+        participant = Participant.objects.get(phone_number=request.data.get('phone_number'))
+        serializer = ParticipantSerializer(participant)
         return Response(serializer.data)
 
 
