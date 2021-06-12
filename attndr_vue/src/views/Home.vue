@@ -1,5 +1,5 @@
 <template>
-  <div class="hero is full-height-with-navbar m-4 mt-5">
+  <div class="hero m-4 mt-5">
     <div id="modalAddEvent" class="modal animate__animated">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -177,7 +177,7 @@ export default {
             data: response.data,
             columns: [
               { data: "id", width: "5%" },
-              { data: "event_name", width: "45%" },
+              { data: "event_name", width: "50%" },
               { 
                 data: "date", 
                 render: function(data, type, row){
@@ -198,7 +198,7 @@ export default {
                 render: function(data, type, row){
                   return '<div class="action-buttons buttons are-small is-flex-direction-row"><router-link to="" id="btnView" class="button is-info py-0 px-2">VIEW</router-link><router-link to="" id="btnDelete" class="button is-danger py-0 px-2">DELETE</router-link></div>'
                 },
-                width: "15%"
+                width: "10%"
               }
             ],
             columnDefs: [
@@ -220,6 +220,7 @@ export default {
           }else if(error.message){
               console.log(JSON.stringify(error))
           }
+          $('#my-dt').DataTable()
         })
     }
   }
