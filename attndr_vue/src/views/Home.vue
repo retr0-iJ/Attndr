@@ -171,7 +171,7 @@ export default {
   methods: {
     getAllUserEvents() {
       axios
-        .get("http://localhost:8000/api/v1/events")
+        .get("/api/v1/events")
         .then(response => {
           $('#my-dt').DataTable({
             data: response.data,
