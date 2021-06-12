@@ -16,7 +16,7 @@
         </div>
 
         <div class="hero-body">
-            <div class="event-column mb-6">
+            <div class="event-column mb-5">
                 <div class="columns is-vcentered" v-for="item in getColumnsData" :key="item.column">
                     <div class="column is-one-fifth">
                         <p class="title is-4">
@@ -30,24 +30,26 @@
                     </div>
                 </div>
             </div>
-            <div class="columns is-vcentered is-centered event-summarization">
+            <div class="columns is-vcentered is-centered event-summarization mb-4">
                 <div class="column is-4 event-performance has-text-centered">
                     <p class="title is-4">
                         Event Perfomarmance
                     </p>
-                    <Doughnut
-                        :data="performChartData"
-                        :options="chartOptions" class="doughnut-chart">
-                    </Doughnut>
+                    <div class="holder">
+                        <canvas
+                            id="performChart" class="doughnut-chart">
+                        </canvas>
+                    </div>
                 </div>
-                <div class="column is-4 event-performance has-text-centered">
+                <div class="column is-4 event-attendees has-text-centered">
                     <p class="title is-4">
                         Event Attendees
                     </p>
-                    <Doughnut
-                        :data="attendeesChartData"
-                        :options="chartOptions" class="doughnut-chart">
-                    </Doughnut>
+                    <div class="holder">
+                        <canvas
+                            id="attendeesChart" class="doughnut-chart">
+                        </canvas>
+                    </div>
                 </div>
             </div>
             <div class="event-datatable">
@@ -75,12 +77,10 @@
 
 <script>
 import axios from 'axios'
-import { Doughnut } from 'vue-chart-3'
 
 export default {
 name: "View_Home",
 components: {
-    Doughnut
 },
 data(){
     return {
@@ -114,11 +114,39 @@ data(){
             animation: {
                 animateRotate: false
             },
-            tooltips: {
-                callbacks: {
-                    label(tooltipItem, data) {
-                        return `${data.labels[tooltipItem.index]}: 
-                            ${data.datasets[0].data[tooltipItem.index]/data.datasets[0].data.reduce((total, num) => {return total + num})*100}%`;
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.parsed/context.dataset.data.reduce((total, num) => {return total + num})*100}%`;
+                        }
+                    }
+                }
+            }
+        },
+        createEmptyChart: {
+            type: 'doughnut',
+            data: {
+                labels: ['No Data'],
+                datasets: [{
+                    label: ['Dataset 1'],
+                    data: [1],
+                    backgroundColor: '#006ca3'
+                }],
+            },
+            options: {
+                responsive: true, 
+                maintainAspectRatio: false, 
+                animation: {
+                    animateRotate: false
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}`;
+                            }
+                        }
                     }
                 }
             }
@@ -165,7 +193,7 @@ computed: {
 methods: {
     getEventDetails() {
         axios
-            .get("http://localhost:8000/api/v1/events")
+            .get("/api/v1/events")
             .then(response => {
                 $('#my-dt').DataTable({
                     data: response.data,
@@ -185,6 +213,8 @@ methods: {
                 }else if(error.message){
                     console.log(JSON.stringify(error))
                 }
+                var performChart = new Chart($('#performChart'), this.createEmptyChart)
+                var eventChart = new Chart($('#attendeesChart'), this.createEmptyChart)
                 $('#my-dt').DataTable()
             })
     }
@@ -192,10 +222,6 @@ methods: {
 }
 </script>
 <style lang="scss" scoped>
-    .doughnut-chart{
-        height: 15vw
-    }
-
     #my-dt{
         width: 100%
     }
