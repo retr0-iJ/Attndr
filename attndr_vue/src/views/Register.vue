@@ -69,6 +69,9 @@
                                 <div class="notification is-danger" v-if="errors.length">
                                     <p>{{ errors[0] }}</p>
                                 </div>
+                                <div class="notification is-success" v-if="success">
+                                    <p>{{ success }}</p>
+                                </div>
                                 <div class="field has-text-centered">
                                     <button id="btnRegister" class="button is-info is-fullwidth is-medium">
                                         Sign Up
@@ -87,7 +90,6 @@
 </template>
 <script>
 import axios from 'axios'
-import { toast } from 'bulma-toast'
 
     export default {
         name: "Register",
@@ -98,7 +100,8 @@ import { toast } from 'bulma-toast'
                 email: '',
                 password: '',
                 repassword: '',
-                errors: []
+                errors: [],
+                success: ''
             }
         },
         created(){
@@ -109,6 +112,7 @@ import { toast } from 'bulma-toast'
                 $("#btnRegister").addClass("is-loading")
 
                 this.errors = []
+                this.success = ''
 
                 const formData = {
                     name: this.name,
@@ -121,18 +125,7 @@ import { toast } from 'bulma-toast'
                 axios
                     .post("/api/v1/users/", formData)
                     .then(response => {
-                        toast({
-                            message: 'Account successfully created, please login!',
-                            type: 'is-success',
-                            dismissible: true,
-                            pauseOnHover: true,
-                            duration: 2000,
-                            position: 'bottom-right'
-                        })
-
-                        setTimeout(() => {
-                            this.$router.push('/login')
-                        }, 1500)
+                        this.success = 'Account successfully created, please check your email to ACTIVATE your account before login!'
                     })
                     .catch(error => {
                         if(error.response){
