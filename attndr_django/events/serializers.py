@@ -8,7 +8,7 @@ class ParticipantSerializer(serializers.ModelSerializer):
         fields  = '__all__'
 
     def create(self, validated_data):
-        return Event.objects.create(**validated_data)
+        return Participant.objects.create(**validated_data)
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -25,4 +25,4 @@ class AttendanceSerializer(serializers.ModelSerializer):
         fields  = '__all__'
 
     def create(self, validated_data):
-        return Event.objects.create(**validated_data)
+        return Attendance.objects.create(**validated_data)

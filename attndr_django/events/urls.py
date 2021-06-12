@@ -1,5 +1,8 @@
 from django.urls import path, include
-from .views import EventDetail, EventList, AttendanceList, ParticipantDetail, ParticipantList, UserEventList, EventAttendanceList, EventParticipantList
+from .views import EventDetail, EventList, AttendanceList, ParticipantDetail \
+                    , ParticipantList, UserEventList, EventAttendanceList \
+                    , EventParticipantList, UserUpcomingEvent, UserDoneEvent \
+                    , AddEventParticipant
 
 from rest_framework.authtoken import views
 urlpatterns = [
@@ -10,9 +13,14 @@ urlpatterns = [
     path('api-token-auth/', views.obtain_auth_token),
 
     path('events/', UserEventList.as_view()),
+    path('events/upcoming', UserUpcomingEvent.as_view()),
+    path('events/done', UserDoneEvent.as_view()),
+
     path('events/all/', EventList.as_view()),
     path('events/detail/', EventDetail.as_view()),
     
     path('events/attendance/', EventAttendanceList.as_view()),
     path('events/participant/', EventParticipantList.as_view()),
+
+    path('events/participant/add/', AddEventParticipant.as_view()),
 ]

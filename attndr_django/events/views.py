@@ -8,6 +8,9 @@ from rest_framework.authtoken.models import Token
 
 from django.shortcuts import get_list_or_404, get_object_or_404
 
+from rest_framework.parsers import MultiPartParser
+import pandas, json
+
 class EventList(APIView):
     def get(self, request):
         events = Event.objects.all()
@@ -44,6 +47,22 @@ class UserEventList(APIView):
         event.delete()
         return Response({})
     
+
+class UserUpcomingEvent(APIView):
+    def get(self, request):
+        headerToken = request.headers.get('Authorization')
+        token = Token.objects.get(key = headerToken.split()[1])
+        events = Event.objects.filter(user=token.user_id, is_done=False)
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
+
+class UserDoneEvent(APIView):
+    def get(self, request):
+        headerToken = request.headers.get('Authorization')
+        token = Token.objects.get(key = headerToken.split()[1])
+        events = Event.objects.filter(user=token.user_id, is_done=True)
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
 
 
 class EventDetail(APIView):
@@ -101,11 +120,48 @@ class EventParticipantList(APIView):
     def get(self, request, format=None):
         event = Event.objects.filter(id=request.data.get("event_id"), user=request.data.get("user_id"))
         participant = event.first().participants.all()
-        #print(event.first().participants.all())
         serializer = ParticipantSerializer(data=participant, many=True)
-        print(serializer)
         if serializer.is_valid():
             serializer.save()
         return Response(serializer.data)
 
-  
+class AddEventParticipant(APIView):
+    parser_classes = (MultiPartParser, )
+    def post(self, request, format=None):
+        file_obj = request.data["file"]
+        excel = pandas.read_excel(file_obj, sheet_name='Sheet1', converters={'phone': str})
+        excel_json = excel.to_json(orient='records')
+        excel_json = list(eval(excel_json))
+        event_id = int(request.data['event_id'])
+        participant_id = []
+        for d in excel_json:
+            serializer = ParticipantSerializer(data=d)
+            if serializer.is_valid():
+                serializer.save()
+                participant_id.append(serializer.data['id'])
+            else:
+                instance = get_object_or_404(Participant.objects.all(), phone=d['phone'])
+                update_serializer = ParticipantSerializer(instance, data=d)
+                if update_serializer.is_valid():
+                    update_serializer.save()
+                    participant_id.append(update_serializer.data['id'])
+
+        for p in participant_id:
+            dicAttendance = {}
+            dicAttendance['participant'] = p
+            dicAttendance['event'] = event_id
+            attendanceJson = json.dumps(dicAttendance)
+            attendanceJson = eval(attendanceJson)
+
+            
+            attendance = Attendance.objects.filter(event=attendanceJson['event'], participant=attendanceJson['participant']).first()
+            if attendance is None:
+                serializer = AttendanceSerializer(data=attendanceJson)
+                if serializer.is_valid():
+                    serializer.save()
+            else:
+                instance = attendance
+                update_serializer = AttendanceSerializer(instance, data=p)
+                if update_serializer.is_valid():
+                    update_serializer.save()
+        return Response({'Adding Success' : 'True'})
