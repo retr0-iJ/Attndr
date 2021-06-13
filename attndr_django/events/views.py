@@ -69,8 +69,7 @@ class UserDoneEvent(APIView):
 
 
 class EventDetail(APIView):
-    def get(self, request):
-        event_id = request.data.get('event_id')
+    def get(self, request, event_id):
         event = Event.objects.get(id=event_id)
         serializer = EventSerializer(event)
         
@@ -88,7 +87,6 @@ class AttendanceList(APIView):
 
 class EventAttendanceList(APIView):
     def get(self, request):
-        #Validasi user id harus angka
         attendance = Attendance.objects.filter(event=request.data.get("event_id"))
         serializer = AttendanceSerializer(attendance, many = True)
         return Response(serializer.data)

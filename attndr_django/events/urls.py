@@ -17,7 +17,7 @@ urlpatterns = [
     path('events/done/', UserDoneEvent.as_view()),
 
     path('events/all/', EventList.as_view()),
-    path('events/detail/', EventDetail.as_view()),
+    path('events/detail/<int:event_id>/', EventDetail.as_view()),
     
     path('events/attendance/', EventAttendanceList.as_view()),
     path('events/participant/', EventParticipantList.as_view()),
