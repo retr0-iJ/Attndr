@@ -118,8 +118,8 @@ class ParticipantDetail(APIView):
 
 
 class EventParticipantList(APIView):
-    def get(self, request, format=None):
-        event = Event.objects.filter(id=request.data.get("event_id"), user=request.data.get("user_id"))
+    def get(self, request, event_id):
+        event = Event.objects.filter(id=event_id)
         participant = event.first().participants.all()
         serializer = ParticipantSerializer(data=participant, many=True)
         if serializer.is_valid():

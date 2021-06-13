@@ -20,7 +20,7 @@ urlpatterns = [
     path('events/detail/<int:event_id>/', EventDetail.as_view()),
     
     path('events/attendance/', EventAttendanceList.as_view()),
-    path('events/participant/', EventParticipantList.as_view()),
+    path('events/participant/<int:event_id>/', EventParticipantList.as_view()),
 
     path('events/participant/add/', AddEventParticipant.as_view()),
 ]
