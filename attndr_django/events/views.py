@@ -71,9 +71,25 @@ class UserDoneEvent(APIView):
 class EventDetail(APIView):
     def get(self, request, event_id):
         event = Event.objects.get(id=event_id)
-        serializer = EventSerializer(event)
+        eventSerializer = EventSerializer(event)
         
-        return Response(serializer.data)
+        attendance = Attendance.objects.filter(event=event)
+
+        attendee = Attendance.objects.filter(event=event, time_in__isnull=False)
+        attendance_performa = len(attendee)/len(attendance) * 100.0
+
+        attendanceSerializer = AttendanceSerializer(attendance, many = True)
+
+        participant = event.participants.all()
+        participantSerializer = ParticipantSerializer(data=participant, many=True)
+        if participantSerializer.is_valid():
+            None
+
+        return Response({'event' : eventSerializer.data 
+                        , 'attendance' : attendanceSerializer.data
+                        , 'participant' : participantSerializer.data
+                        , 'event attendees' : attendance_performa
+                        })
     
     
 
@@ -86,15 +102,9 @@ class AttendanceList(APIView):
 
 
 class EventAttendanceList(APIView):
-    def get(self, request):
-        attendance = Attendance.objects.filter(event=request.data.get("event_id"))
+    def get(self, request, event_id):
+        attendance = Attendance.objects.filter(event=event_id)
         serializer = AttendanceSerializer(attendance, many = True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = AttendanceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
         return Response(serializer.data)
 
 
