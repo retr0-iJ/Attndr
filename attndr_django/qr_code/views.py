@@ -14,7 +14,7 @@ from io import BytesIO
 import string, random
 
 class ShowQRCode(APIView):
-    def get(self, request):
+    def post(self, request):
         participant_phone_number = request.data.get("phone_number")
         
         participant = Participant.objects.filter(phone=participant_phone_number).first()
@@ -32,7 +32,7 @@ class ShowQRCode(APIView):
         return Response({'location' : location})
 
 class QRCodeResponse(APIView):
-    def get(self, request):
+    def post(self, request):
         participant_phone_number = request.data.get("phone_number")
         participant = Participant.objects.filter(phone=participant_phone_number).first()
         event = Event.objects.filter(id=request.data.get("event_id")).first()

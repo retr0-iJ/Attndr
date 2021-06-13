@@ -46,15 +46,16 @@ const routes = [
   {
     path: '/start_event',
     name: 'Start_Event',
+    props: true,
     component: Start_Event
   },
   {
-    path: '/view_home',
+    path: '/view_home/:id',
     name: 'View_Home',
     component: View_Home
   },
   {
-    path: '/view_done',
+    path: '/view_done/:id',
     name: 'View_Done',
     component: View_Done
   }

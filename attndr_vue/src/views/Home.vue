@@ -167,11 +167,18 @@ export default {
         });
       });
     }(jQuery))
+
+    $(() => {
+        $('body').on('click', '#btnView', () => {
+          var id = $('#btnView').data('id') 
+          this.$router.push({ path: `/view_home/${id}` })
+        })
+    })
   },
   methods: {
-    getAllUserEvents() {
-      axios
-        .get("/api/v1/events")
+    async getAllUserEvents() {
+      await axios
+        .get("/api/v1/events/upcoming")
         .then(response => {
           $('#my-dt').DataTable({
             data: response.data,
@@ -196,7 +203,7 @@ export default {
               {
                 data: "action",
                 render: function(data, type, row){
-                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><router-link to="" id="btnView" class="button is-info py-0 px-2">VIEW</router-link><router-link to="" id="btnDelete" class="button is-danger py-0 px-2">DELETE</router-link></div>'
+                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><a id="btnView" data-id="' + row.id + '" class="button is-info py-0 px-2">VIEW</a><a id="btnDelete" data-id="' + row.id + '" class="button is-danger py-0 px-2">DELETE</a></div>'
                 },
                 width: "10%"
               }

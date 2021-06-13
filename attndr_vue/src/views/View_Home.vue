@@ -12,10 +12,10 @@
                         </span>
                     </a>
                 </div>
-                <div class="column">
-                    <button class="button is-link is-medium">
+                <div class="column" v-if="isStartEventOn">
+                    <router-link :to="{ name: 'Start_Event', params: { id: id, name: events.event_name }}" class="button is-link is-medium" v-if="events.event_name != ''">
                         Start Event
-                    </button>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -60,11 +60,13 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
 
 export default {
-name: "View_Home",
+    name: "View_Home",
     data(){
         return {
+            id: 0,
             columns: [
                 { name: 'event_name', text: 'Event Name' },
                 { name: 'speaker_name', text: 'Speaker Name' },
@@ -74,13 +76,15 @@ name: "View_Home",
                 { name: 'quota', text: 'Quota' },
             ],
             events: {
+                id: '',
                 event_name: '',
                 speaker_name: '',
                 location: '',
                 date: '',
                 time_start: '',
                 time_end: '',
-                quota: ''
+                quota: '',
+                participants: []
             },
             participantColumns: [
                 { name: 'id', text: 'ID' },
@@ -92,50 +96,61 @@ name: "View_Home",
         }
     },
     created() {
+        this.id = this.$route.params.id
         this.getEventDetails()
     },
     computed: {
         getColumnsData(){
             return this.columns.map((column, i) => {
-                if(column.name !== "time")
+                if(!["date", "time"].includes(column.name))
                     return{
                         column: column.text,
                         data: this.events[column.name]
                     }
+                else if(column.name === "date")
+                    return{
+                        column: column.text,
+                        data: moment(this.events.date).format("DD MMMM YYYY")
+                    }
                 else
                     return{
                         column: column.text,
-                        data: this.events["time_start"] + '-' + this.events["time_end"]
+                        data: moment(this.events.time_start, "HH:mm:ss").format("HH:mm") + '-' + moment(this.events.time_end, "HH:mm:ss").format("HH:mm")
                     }
             })
+        },
+        isStartEventOn(){
+            return new Date() >= new Date(this.events.date + ' ' + this.events.time_start)
         }
     },
     methods: {
-        getEventDetails() {
-            axios
-                .get("http://localhost:8000/api/v1/events")
+        async getEventDetails() {            
+            await axios
+                .get("/api/v1/events/detail/" + this.id + "/")
                 .then(response => {
-                    $('#my-dt').DataTable({
-                        data: response.data,
-                        columns: [
-                            { data: "id", width: "5%" },
-                            { data: "name", width: "50%" },
-                            { data: "email", width: "50%" },
-                            { data: "phone", width: "50%" },
-                            { data: "address", width: "50%" },
-                        ],
-                        columnDefs: [
-                        {
-                            targets: [ -1,-2,-3 ],
-                            searchable: false
-                        },
-                        {
-                            targets: -1,
-                            orderable: false
-                        }
-                        ],
-                        autoWidth: false
-                    })
+                    this.events = response.data.event
+                    axios
+                        .get("/api/v1/events/participant/" + this.events.id + "/")
+                        .then(response => {
+                            $('#my-dt').DataTable({
+                                data: response.data,
+                                columns: [
+                                    { data: "id", width: "5%" },
+                                    { data: "name", width: "30%" },
+                                    { data: "email", width: "30%" },
+                                    { data: "phone", width: "20%" },
+                                    { data: "city", width: "15%" },
+                                ],
+                                autoWidth: false
+                            })
+                        }).catch(error => {
+                            if(error.response){
+                                console.log(JSON.stringify(error.response.data))
+                            }else if(error.message){
+                                console.log(JSON.stringify(error))
+                            }
+                            $('#my-dt').DataTable()
+                        })
                 })
                 .catch(error => {
                     if(error.response){

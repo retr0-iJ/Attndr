@@ -62,7 +62,7 @@ export default {
   },
   mounted() {
     (function($){
-      document.title = "Home"
+      document.title = "Done"
       $(function(){
         $("#btnAddEvent").click(function() {
             $("#modalAddEvent")
@@ -83,11 +83,18 @@ export default {
         });
       });
     }(jQuery))
+
+    $(() => {
+        $('body').on('click', '#btnView', () => {
+          var id = $('#btnView').data('id') 
+          this.$router.push({ path: `/view_done/${id}` })
+        })
+    })
   },
   methods: {
     getAllUserEvents() {
       axios
-        .get("/api/v1/events")
+        .get("/api/v1/events/done/")
         .then(response => {
           $('#my-dt').DataTable({
             data: response.data,
@@ -112,7 +119,7 @@ export default {
               {
                 data: "action",
                 render: function(data, type, row){
-                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><router-link to="" id="btnView" class="button is-info py-0 px-2">VIEW</router-link></div>'
+                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><a id="btnView" data-id="' + row.id + '" class="button is-info py-0 px-2">VIEW</a></div>'
                 },
                 width: "10%"
               }
