@@ -13,8 +13,8 @@ urlpatterns = [
     path('api-token-auth/', views.obtain_auth_token),
 
     path('events/', UserEventList.as_view()),
-    path('events/upcoming', UserUpcomingEvent.as_view()),
-    path('events/done', UserDoneEvent.as_view()),
+    path('events/upcoming/', UserUpcomingEvent.as_view()),
+    path('events/done/', UserDoneEvent.as_view()),
 
     path('events/all/', EventList.as_view()),
     path('events/detail/', EventDetail.as_view()),

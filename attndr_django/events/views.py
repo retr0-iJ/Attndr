@@ -26,6 +26,9 @@ class UserEventList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        headerToken = request.headers.get('Authorization')
+        token = Token.objects.get(key = headerToken.split()[1])
+        request.data['user'] = token.user_id
         serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
