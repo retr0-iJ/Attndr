@@ -156,15 +156,6 @@ export default {
                         }
                     }
                 }
-            },
-            performChartData: {
-                labels: ['Boring', 'Not Bad', 'Great'],
-                datasets: [
-                    {
-                        backgroundColor: [ '#006ca3', '#0098bc', '#00c4cc'],
-                        data: []
-                    },
-                ]
             }
         }
     },
@@ -242,7 +233,15 @@ export default {
                                 $(row).css({"background-color": "red"})
                         }
                     })
-                    var performChart = new Chart($('#performChart'), this.createEmptyChart)
+                    var performChart = new Chart($('#performChart'), {
+                        labels: ['Boring', 'Not Bad', 'Great'],
+                        datasets: [
+                            {
+                                backgroundColor: [ '#006ca3', '#0098bc', '#00c4cc'],
+                                data: []
+                            },
+                        ]
+                    })
                     var eventChart = new Chart($('#attendeesChart'), {
                         type: 'doughnut',
                         data: {
@@ -257,16 +256,16 @@ export default {
                         options: this.chartOptions
                     })
                 })
-                // .catch(error => {
-                //     if(error.response){
-                //         console.log(JSON.stringify(error.response.data))
-                //     }else if(error.message){
-                //         console.log(JSON.stringify(error))
-                //     }
-                //     $('#my-dt').DataTable()
-                //     var performChart = new Chart($('#performChart'), this.createEmptyChart)
-                //     var eventChart = new Chart($('#attendeesChart'), this.createEmptyChart)
-                // })
+                .catch(error => {
+                    if(error.response){
+                        console.log(JSON.stringify(error.response.data))
+                    }else if(error.message){
+                        console.log(JSON.stringify(error))
+                    }
+                    $('#my-dt').DataTable()
+                    var performChart = new Chart($('#performChart'), this.createEmptyChart)
+                    var eventChart = new Chart($('#attendeesChart'), this.createEmptyChart)
+                })
         }
     }
 }
