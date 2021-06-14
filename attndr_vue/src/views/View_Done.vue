@@ -110,7 +110,7 @@ export default {
                 { name: 'name', text: 'Name' },
                 { name: 'email', text: 'Email' },
                 { name: 'phone', text: 'Phone Number' },
-                { name: 'address', text: 'Address (City)' },
+                { name: 'address', text: 'Address' },
                 { name: 'time_in', text: 'Time In' },
                 { name: 'time_out', text: 'Time Out' }
             ],
@@ -162,16 +162,7 @@ export default {
                 datasets: [
                     {
                         backgroundColor: [ '#006ca3', '#0098bc', '#00c4cc'],
-                        data: [1]
-                    },
-                ]
-            },
-            attendeesChartData: {
-                labels: ['Absent', 'Present'],
-                datasets: [
-                    {
-                        backgroundColor: [ '#006ca3', '#0098bc' ],
-                        data: [1]
+                        data: []
                     },
                 ]
             }
@@ -207,70 +198,75 @@ export default {
             await axios
                 .get("/api/v1/events/detail/" + this.id + "/")
                 .then(response => {
-                    this.events = response.data
-                    axios
-                        .get("/api/v1/events/participant/" + this.events.id + "/")
-                        .then(response => {
-                            this.events.participants = response.data
-                            axios
-                            .get("/api/v1/events/attendance/" + this.events.id + "/")
-                            .then(response => {
-                                let op = this.events.participants.map((e,i) => {
-                                    let temp = response.data.find(element => element.participant_id === e.id)
-                                    if(temp.event_id){
-                                        e.time_in = temp.time_in
-                                        e.time_out = temp.time_out
-                                    }
-                                    return e
-                                })
-                                $('#my-dt').DataTable({
-                                    data: this.events.participants,
-                                    columns: [
-                                        { data: "id", width: "5%" },
-                                        { data: "name", width: "25%" },
-                                        { data: "email", width: "25%" },
-                                        { data: "phone", width: "15%" },
-                                        { data: "city", width: "10%" },
-                                        { data: "time_in", width: "10%" },
-                                        { data: "time_out", width: "10%" },
-                                    ],
-                                    autoWidth: false,
-                                    createdRow: function(row, data, dataIndex){
-                                        if(data.time_in === '')
-                                            $(row).css({"background-color": "red"})
-                                    }
-                                })
-                            }).catch(error => {
-                                if(error.response){
-                                    console.log(JSON.stringify(error.response.data))
-                                }else if(error.message){
-                                    console.log(JSON.stringify(error))
-                                }
-                                $('#my-dt').DataTable()
-                                var performChart = new Chart($('#performChart'), this.createEmptyChart)
-                                var eventChart = new Chart($('#attendeesChart'), this.createEmptyChart)
-                            })
-                        }).catch(error => {
-                            if(error.response){
-                                console.log(JSON.stringify(error.response.data))
-                            }else if(error.message){
-                                console.log(JSON.stringify(error))
-                            }
-                            $('#my-dt').DataTable()
-                            var performChart = new Chart($('#performChart'), this.createEmptyChart)
-                            var eventChart = new Chart($('#attendeesChart'), this.createEmptyChart)
+                    this.events = response.data.event
+                    this.events.participants = response.data.participant
+                    this.events.attendance = response.data.attendance
+
+                    let op = this.events.participants.map((e,i) => {
+                        let temp = response.data.attendance.find((element) => {
+                            return element.participant === e.id
                         })
-                })
-                .catch(error => {
-                    if(error.response){
-                        console.log(JSON.stringify(error.response.data))
-                    }else if(error.message){
-                        console.log(JSON.stringify(error))
-                    }
-                    $('#my-dt').DataTable()
+                        
+                        if(temp){
+                            e.time_in = temp.time_in
+                            e.time_out = temp.time_out
+                        }
+
+                        return e
+                    })
+
+                    $('#my-dt').DataTable({
+                        data: this.events.participants,
+                        columns: [
+                            { data: "id", width: "5%" },
+                            { data: "name", width: "25%" },
+                            { data: "email", width: "25%" },
+                            { data: "phone", width: "15%" },
+                            { data: "city", width: "10%" },
+                            { data: "time_in", width: "10%" },
+                            { data: "time_out", width: "10%" },
+                        ],
+                        columnDefs: [
+                            {
+                                targets: [ -1,-2 ],
+                                searchable: false
+                            },
+                            {
+                                targets: [ -1, -2 ],
+                                orderable: false
+                            }
+                        ],
+                        autoWidth: false,
+                        createdRow: function(row, data, dataIndex){
+                            if(data.time_in === '')
+                                $(row).css({"background-color": "red"})
+                        }
+                    })
                     var performChart = new Chart($('#performChart'), this.createEmptyChart)
-                    var eventChart = new Chart($('#attendeesChart'), this.createEmptyChart)
+                    var eventChart = new Chart($('#attendeesChart'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Absent', 'Present'],
+                            datasets: [
+                                {
+                                    backgroundColor: [ '#006ca3', '#0098bc' ],
+                                    data: response.data.event_attendees
+                                },
+                            ]
+                        },
+                        options: this.chartOptions
+                    })
                 })
+                // .catch(error => {
+                //     if(error.response){
+                //         console.log(JSON.stringify(error.response.data))
+                //     }else if(error.message){
+                //         console.log(JSON.stringify(error))
+                //     }
+                //     $('#my-dt').DataTable()
+                //     var performChart = new Chart($('#performChart'), this.createEmptyChart)
+                //     var eventChart = new Chart($('#attendeesChart'), this.createEmptyChart)
+                // })
         }
     }
 }

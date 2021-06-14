@@ -129,28 +129,18 @@ export default {
                 .get("/api/v1/events/detail/" + this.id + "/")
                 .then(response => {
                     this.events = response.data.event
-                    axios
-                        .get("/api/v1/events/participant/" + this.events.id + "/")
-                        .then(response => {
-                            $('#my-dt').DataTable({
-                                data: response.data,
-                                columns: [
-                                    { data: "id", width: "5%" },
-                                    { data: "name", width: "30%" },
-                                    { data: "email", width: "30%" },
-                                    { data: "phone", width: "20%" },
-                                    { data: "city", width: "15%" },
-                                ],
-                                autoWidth: false
-                            })
-                        }).catch(error => {
-                            if(error.response){
-                                console.log(JSON.stringify(error.response.data))
-                            }else if(error.message){
-                                console.log(JSON.stringify(error))
-                            }
-                            $('#my-dt').DataTable()
-                        })
+                    this.events.participants = response.data.participant
+                    $('#my-dt').DataTable({
+                        data: this.events.participants,
+                        columns: [
+                            { data: "id", width: "5%" },
+                            { data: "name", width: "30%" },
+                            { data: "email", width: "30%" },
+                            { data: "phone", width: "20%" },
+                            { data: "city", width: "15%" },
+                        ],
+                        autoWidth: false
+                    })
                 })
                 .catch(error => {
                     if(error.response){

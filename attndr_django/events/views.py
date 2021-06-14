@@ -87,8 +87,8 @@ class EventDetail(APIView):
         return Response({'event' : eventSerializer.data 
                         , 'attendance' : attendanceSerializer.data
                         , 'participant' : participantSerializer.data
-                        , 'event attendees' : [len(attendee), len(attendance)]
-                        })
+                        , 'event_attendees' : [(len(attendance)-len(attendee)), len(attendee)]
+                })
     
     
 

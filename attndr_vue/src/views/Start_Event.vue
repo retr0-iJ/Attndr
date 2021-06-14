@@ -27,8 +27,10 @@
                                             <div class="field">
                                                 <div class="control">
                                                     <form @submit.prevent="submitParticipantCredential">
-                                                        <input class="input is-large" type="tel" id="inputPhone" v-model="phone"
-                                                        placeholder="Enter your phone number" onblur="this.focus()" autocomplete="off" autofocus>
+                                                        <div id="controlPhone" class="control is-large">
+                                                            <input class="input is-large" type="tel" id="inputPhone" v-model="phone"
+                                                                placeholder="Enter your phone number" onblur="this.focus()" autocomplete="off" autofocus>
+                                                        </div>
                                                     </form>
                                                 </div>
                                             </div>
@@ -43,14 +45,15 @@
                                     </div>
                                     <div class="column is-7">
                                         <p class="subtitle is-4">
-                                            <span v-if="login_message == ''">Please scan the QR Code above with your installed Attndr. on phone and if Succeed / Failed, please click the button below.</span> 
-                                            <span v-else-if="login_message === 'Success'">Login <span class="has-text-success">Successful</span> !</span>
+                                            <span v-if="qr_error != undefined">{{ qr_error }}</span>
+                                            <span v-else-if="login_message == '' && qr_error == undefined">Please scan the QR Code above with your installed Attndr. on phone and if Succeed / Failed, please click the button below.</span> 
+                                            <span v-else-if="login_message == 'Success'">Login <span class="has-text-success">Successful</span> !</span>
                                             <span v-else>
                                                 Login <span class="has-text-danger">Failed</span> ! Please try again.<br>
                                                 If you are having issues, please kindly contact our nearby support.
                                             </span>
                                         </p>
-                                        <button id="btnContinue" class="button is-link" @click="straightCheckLogin">
+                                        <button id="btnContinue" class="button is-warning is-large" @click="straightCheckLogin" v-if="login_message == '' && qr_error == undefined">
                                             Continue
                                         </button>
                                     </div>
@@ -80,6 +83,7 @@ export default {
             entered: false,
             event_id: 0,
             event_name: '',
+            qr_error: '',
             qr_location: '',
             login_message: '',
             body: {},
@@ -106,13 +110,13 @@ export default {
         resetData(){
             this.phone = ''
             this.entered = false
+            this.error = ''
             this.qr_location = ''
             this.login_message = ''
             this.body = {}
         },
         async submitParticipantCredential(){
-            this.entered = true
-            $('#inputPhone').toggleClass("is-loading")
+            $('#controlPhone').addClass("is-loading")
 
             this.body = {
                 event_id: this.event_id,
@@ -122,25 +126,26 @@ export default {
             await axios
                 .post("/api/v1/qr_code/", this.body)
                 .then(response => {
-                    this.qr_location = "../../attndr_django/qr_code/images/qrcode.png" 
+                    this.qr_location = response.data.location 
+                    this.qr_error = response.data.error_message
 
-                    console.log(this.qr_location)
-
-                    this.checkLogin = setTimeout(() => {
-                        axios
-                            .post("/api/v1/qr_code/response/", this.body)
-                            .then(response => {
-                                this.login_message = response.login_message
-                            })
-                            .catch(error => {
-                                this.login_message = "Failed"
-                            })
-                            .then(() => {
-                                setTimeout(() => {
-                                    this.resetData()
-                                }, 1500);
-                            })
-                    }, 15000)
+                    if(this.qr_location != undefined){
+                        this.checkLogin = setTimeout(() => {
+                            axios
+                                .post("/api/v1/qr_code/response/", this.body)
+                                .then(response => {
+                                    this.login_message = response.login_message
+                                })
+                                .catch(error => {
+                                    this.login_message = "Failed"
+                                })
+                                .then(() => {
+                                    setTimeout(() => {
+                                        this.resetData()
+                                    }, 1500);
+                                })
+                        }, 15000)
+                    }
                 })
                 .catch(error => {
                     if(error.response){
@@ -148,29 +153,42 @@ export default {
                     }else if(error.message){
                         console.log(JSON.stringify(error))
                     }
-                    // this.resetData()
+                    this.error = "Something went wrong, please try again!"
+                    setTimeout(() => {
+                        this.resetData()
+                    }, 1500);
                 })
-                .then(function(){
-                    $('#inputPhone').toggleClass("is-loading")
+                .then(() => {
+                    this.entered = true
+                    $('#controlPhone').removeClass("is-loading")
+                    if(this.qr_location == undefined)
+                        setTimeout(() => {
+                            this.resetData()
+                        }, 1500);
                 })
         },
         straightCheckLogin(){
+            $('#btnContinue').addClass("is-loading")
             clearTimeout(this.checkLogin)
             this.checkLogin = null
             axios
                 .post("/api/v1/qr_code/response/", this.body)
                 .then(response => {
-                    this.login_message = response.login_message
+                    this.login_message = response.data.login_message
                 })
                 .catch(error => {
                     this.login_message = "Failed"
                 })
                 .then(() => {
+                    $('#btnContinue').removeClass("is-loading")
                     setTimeout(() => {
                         this.resetData()
                     }, 1500);
                 })
         }
+    },
+    mounted() {
+        document.title = "Start Event"
     },
     computed: {
         

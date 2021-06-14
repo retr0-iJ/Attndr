@@ -69,7 +69,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if((["Landing_Page", "Register", "Login"].includes(to.name)) && store.state.isAuthenticated){
     next('/home')
-  }else if((["Home", "Done", "Start_Event"].includes(to.name)) && !store.state.isAuthenticated){
+  }else if((["Home", "Done", "Start_Event", "View_Home", "View_Done"].includes(to.name)) && !store.state.isAuthenticated){
     next('/login')
   }else{
     next()
