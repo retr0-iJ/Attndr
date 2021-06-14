@@ -203,7 +203,7 @@ export default {
               {
                 data: "action",
                 render: function(data, type, row){
-                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><a id="btnView" data-id="' + row.id + '" class="button is-info py-0 px-2">VIEW</a><a id="btnDelete" data-id="' + row.id + '" class="button is-danger py-0 px-2">DELETE</a></div>'
+                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><a id="btnView" data-id="' + row.id + '" class="button is-info py-0 px-2"><i class="fas fa-eye"></i></a><a id="btnDelete" data-id="' + row.id + '" class="button is-danger py-0 px-2"><i class="fas fa-trash-alt"></i></a></div>'
                 },
                 width: "10%"
               }
