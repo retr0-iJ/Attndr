@@ -27,9 +27,10 @@ class ShowQRCode(APIView):
         qr.add_data(attendance.id)
         qr.make(fit=True)
         img = qr.make_image(fill='black', back_color='white')
-        location = 'qr_code\images\qrcode.png'
-        img.save(location)
-        return Response({'location' : location})
+        save_location = 'media\qrcode.png'
+        img.save(save_location)
+        url_image = 'http://127.0.0.1:8000/media/qrcode.png'
+        return Response({'location' : url_image})
 
 class QRCodeResponse(APIView):
     def post(self, request):
