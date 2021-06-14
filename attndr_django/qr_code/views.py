@@ -22,7 +22,10 @@ class ShowQRCode(APIView):
         event = Event.objects.filter(id=request.data.get("event_id")).first()
         
         attendance = Attendance.objects.filter(event=event, participant=participant).first()
-        
+        if attendance is None:
+            return Response({'error_message' : 'Wrong credential, please try again'})
+
+
         qr = qrcode.QRCode(version=1, box_size=10, border=5)
         qr.add_data(attendance.id)
         qr.make(fit=True)
