@@ -76,7 +76,6 @@ class EventDetail(APIView):
         attendance = Attendance.objects.filter(event=event)
 
         attendee = Attendance.objects.filter(event=event, time_in__isnull=False)
-        attendance_performa = len(attendee)/len(attendance) * 100.0
 
         attendanceSerializer = AttendanceSerializer(attendance, many = True)
 
@@ -88,7 +87,7 @@ class EventDetail(APIView):
         return Response({'event' : eventSerializer.data 
                         , 'attendance' : attendanceSerializer.data
                         , 'participant' : participantSerializer.data
-                        , 'event attendees' : attendance_performa
+                        , 'event attendees' : len(attendee)
                         })
     
     
