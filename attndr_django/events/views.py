@@ -1,3 +1,4 @@
+from rest_framework.serializers import Serializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -10,6 +11,7 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 
 from rest_framework.parsers import MultiPartParser
 import pandas, json
+from datetime import datetime
 
 class EventList(APIView):
     def get(self, request):
@@ -98,6 +100,21 @@ class AttendanceList(APIView):
         attendance = Attendance.objects.all()
         serializer = AttendanceSerializer(attendance, many=True)
         return Response(serializer.data)
+
+    def put(self, request):
+        event = request.data.get('event_id')
+        participant = request.data.get('participant_id')
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+
+        obj, created = Attendance.objects.update_or_create(
+            event=event, participant=participant,
+            defaults={'time_in': current_time},
+        )
+
+        return Response({})
+
+    
 
 
 class EventAttendanceList(APIView):
