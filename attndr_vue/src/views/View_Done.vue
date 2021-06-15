@@ -234,13 +234,17 @@ export default {
                         }
                     })
                     var performChart = new Chart($('#performChart'), {
-                        labels: ['Boring', 'Not Bad', 'Great'],
-                        datasets: [
-                            {
-                                backgroundColor: [ '#006ca3', '#0098bc', '#00c4cc'],
-                                data: []
-                            },
-                        ]
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Boring', 'Not Bad', 'Great'],
+                            datasets: [
+                                {
+                                    backgroundColor: [ '#006ca3', '#0098bc', '#00c4cc'],
+                                    data: [ 1,0,0 ] // please change, conditioning ur data
+                                },
+                            ],
+                        },
+                        options: this.chartOptions
                     })
                     var eventChart = new Chart($('#attendeesChart'), {
                         type: 'doughnut',

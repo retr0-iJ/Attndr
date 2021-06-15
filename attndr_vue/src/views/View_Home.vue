@@ -99,6 +99,9 @@ export default {
         this.id = this.$route.params.id
         this.getEventDetails()
     },
+    mounted() {
+        document.title = "View Home"
+    },
     computed: {
         getColumnsData(){
             return this.columns.map((column, i) => {

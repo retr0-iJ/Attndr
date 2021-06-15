@@ -41,6 +41,9 @@ export default {
         this.uid = this.$route.params.uid
         this.token = this.$route.params.token
     },
+    mounted() {
+        document.title = "User Activation"
+    },
     methods: {
         activateUserAccount(){
             $("#btnActivate").addClass("is-loading")
