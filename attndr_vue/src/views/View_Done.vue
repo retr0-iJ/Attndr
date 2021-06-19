@@ -34,7 +34,7 @@
             <div class="columns is-vcentered is-centered event-summarization mb-4">
                 <div class="column is-4 event-performance has-text-centered">
                     <p class="title is-4">
-                        Event Perfomarmance
+                        Event Performance
                     </p>
                     <div class="holder">
                         <canvas
@@ -240,7 +240,7 @@ export default {
                             datasets: [
                                 {
                                     backgroundColor: [ '#006ca3', '#0098bc', '#00c4cc'],
-                                    data: [ 1,0,0 ] // please change, conditioning ur data
+                                    data: [ 3,5,2 ] // please change, conditioning ur data
                                 },
                             ],
                         },
