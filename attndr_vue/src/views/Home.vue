@@ -7,7 +7,7 @@
                 <div class="field levels">
                   <div class="level-left">
                     <i class="fa fa-calendar-alt fa-2x level-item"></i>
-                    <h3 class="title level-item">Add Event</h3>
+                    <h3 class="title level-item">Update Event</h3>
                   </div>
                 </div>
                 <hr>
