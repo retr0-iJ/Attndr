@@ -184,7 +184,7 @@ export default {
             data: response.data,
             columns: [
               { data: "id", width: "5%" },
-              { data: "event_name", width: "50%" },
+              { data: "event_name", width: "47%" },
               { 
                 data: "date", 
                 render: function(data, type, row){
@@ -203,9 +203,9 @@ export default {
               {
                 data: "action",
                 render: function(data, type, row){
-                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><a id="btnView" data-id="' + row.id + '" class="button is-info py-0 px-2"><i class="fas fa-eye"></i></a><a id="btnDelete" data-id="' + row.id + '" class="button is-danger py-0 px-2"><i class="fas fa-trash-alt"></i></a></div>'
+                  return '<div class="action-buttons buttons are-small is-flex-direction-row"><a id="btnView" data-id="' + row.id + '" class="button is-info py-0 px-2"><i class="fas fa-eye"></i></a><a id="btnUpdate" data-id="' + row.id + '" class="button is-warning py-0 px-2"><i class="fas fa-pencil-alt"></i></a><a id="btnDelete" data-id="' + row.id + '" class="button is-danger py-0 px-2"><i class="fas fa-trash-alt"></i></a></div>'
                 },
-                width: "10%"
+                width: "13%"
               }
             ],
             columnDefs: [
